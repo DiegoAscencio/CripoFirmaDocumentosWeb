@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.main-section {
+    margin: 0 auto;
+    margin-top: 130px;
+    padding: 0;
+}
+
+.modal-content {
+    background-color: #E7E7E7;
+    opacity: .95;
+    padding: 0 18px;
+    box-shadow: 0px 0px 15px #20141b;
+}
+
+.user-img {
+    margin-top: -50px;
+    margin-bottom: 40px;
+}
+
+.form-group{
+    margin-bottom: 30px;
+}
+
+.form-group input{
+    height: 42px;
+    border-radius: 5px;
+    border: 0;
+    font-size: 18px;
+    padding-left: 55px;
+}
+
+.form-group::before {
+    font-family: 'Font Awesome\ 5 Free';
+    content: "\f007";
+    position: absolute;
+    font-size: 22px;
+    color: #6F6F7B;
+    left: 28px;
+    padding-top: 4px;
+
+}
+
+.form-group:last-of-type::before {
+    content: "\f023";
+}
+
+button{
+    width: 40%;
+    margin-top: 5px;
+    margin-bottom: 25px;
+}
+
+.btn{
+    background-color: #01ABC5;
+    color: #ffff;
+    font-size: 19px;
+    padding: 7px 14px;
+    border-radius: 5px;
+}
+
+.btn:hover, .btn:focus {
+    background-color: rgb(15, 108, 122);
+}
+
+.forgot {
+    padding-top: 5px;
+    padding-bottom: 25px;
+}
+
+.forgot a {
+    color: #01ABC5;
+}
+
+.container{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content:space-evenly;
+    align-items: stretch;
+}
+
+.item{
+    margin: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
