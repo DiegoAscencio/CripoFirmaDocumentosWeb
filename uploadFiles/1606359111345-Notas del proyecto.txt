@@ -1,0 +1,112 @@
+-----------------------------------------
+Clúster
+-----------------------------------------
+Crear VPC:
+	- VPC -> Your VPCs -> Create VPC
+	- Name tag: CloudProject_Translator_VPC
+	- IPv4 CIDR block: 10.1.0.0/16
+Crear 2 subredes:
+	- VPC -> Subnets -> Create subnet
+	
+	- VPC ID: Seleccionar la VPC recién creada
+	- Subnet name: CloudProject_Translator_Subnet_A
+	- Availability zone: us-east-1a
+	- IPv4 CIDR block: 10.1.1.0/24
+	
+	- VPC ID: Seleccionar la VPC recién creada
+	- Subnet name: CloudProject_Translator_Subnet_B
+	- Availability zone: us-east-1b
+	- IPv4 CIDR block: 10.1.2.0/24
+Habilitar salida a internet con un internet gateway:
+	- VPC -> Internet Gateways -> Create internet gateway
+	- Name tag: CloudProject_Translator_InternetGateway
+	- Pulsar crear
+	- Después en el recuadro verde seleccionar "Attach to a VPC"
+	- Seleccionar la VPC que creamos
+Configurar tablas de routeo:
+	- VPC -> Route tables -> Seleccionar la asociada a nuestra VPC
+	- Seleccionar pestaña routes y click en "Edit routes"
+	- Seleccionar "Add route"
+		- Destination: 0.0.0.0/0
+		- Target -> Internet Gateway -> CloudProject_Translator_InternetGateway
+	- Seleccionar "Save routes"
+-----------------------------------------
+Instancias
+-----------------------------------------
+Creación de rol:
+	- IAM -> Crear rol
+	- AWS service -> EC2
+	- Permisos:
+		- AmazonS3FullAccess
+		- AmazonTranscribeFullAccess
+		- TranslateFullAccess
+		- AmazonPollyFullAccess
+	- Nombre: CloudProject_Translator_Rol
+Creación de 2 instancias:
+	- EC2 -> Launch instance
+	- Imagen: Ubuntu Server 18.04 LTS (HVM), SSD Volume Type
+	- Tipo: t2.micro
+	- Detalles:
+		- Network: CloudProject_Translator_VPC
+		- Subnet: Una instancia en A y otra en B
+		- Auto-assign Public IP: Enable
+		- IAM role: CloudProject_Translator_Rol
+	- Storage: 8GB
+	- Security group:
+		- Crear nuevo
+		- Nombre del SG: CloudProject_Translator_SecurityGroup
+		- SSH
+		- Custom TCP Rule
+			- Protocolo: TCP
+			- Port range: 3000
+			- Source: Anywhere
+		- Para la otra instancia usar este SG creado
+	- Seleccionar llaves
+	
+Conectarse a ambas instancias vía SSH
+	- Descargar información de paquetes
+		- sudo apt update
+	- Instalar python
+		- sudo apt install software-properties-common
+		- sudo add-apt-repository ppa:deadsnakes/ppa
+		- sudo apt update
+		- sudo apt install python3.8 -y
+		- sudo apt install python3-pip -y
+	- Instalar dependencias del código
+		- pip3 install boto3
+		- pip3 install flask
+	- Pasarle el archivo de python "app.py"
+	- Correr la aplicación en la instancia
+		- python3 app.py
+-----------------------------------------
+Bucket
+-----------------------------------------
+Crear el bucket donde se guardarán los audios
+	- S3 -> Create bucket -> cloudproject-translator-bucket
+	- Region: us-east-1
+	- Desmarcar "Block all public access"
+-----------------------------------------
+Load balancer
+-----------------------------------------
+Crear un load balancer
+	- EC2 -> Load Balancers -> Create Load Balancer -> Network Load Balancer
+	- Nombre: cloudproject-translator-lb
+	- Listeners
+		- Load Balancer Protocol: TCP
+		- Load Balancer Port: 3000
+	- Availability Zones
+		- VPC: CloudProject_Translator_VPC
+		- Habilitar ambas zonas en los checkboxes
+		- Seleccionar las subredes que correspondan a las zonas (A con A, B con B)
+	- Configure Routing
+		- Target group: CloudProject
+		- Protocol: TCP
+		- Port: 3000
+	- Register Targets
+		- Seleccionar ambas instancias
+	- Crear
+	
+Con el DNS que genere el load balancer haremos las peticiones en el puerto 3000
+	
+	
+	
