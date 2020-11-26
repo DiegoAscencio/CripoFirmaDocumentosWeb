@@ -48,8 +48,9 @@
     </form>
     <div id="singedfiles" class="files-table">
     </div>
-    <form action="/verifyFiles" method="get">
-      <button class="submit-btn" type="submit">Verify</button>
+    <!--<form action="/verifyFiles" method="get">
+      <button class="submit-btn" type="submit">Verify</button>-->
+    <button class="submit-btn" type="button" onclick="verify()">Verify</button>
     </form>
     </form>
 
@@ -85,6 +86,12 @@
         li.appendChild(document.createTextNode(file));
         list_element_in_html_signed.appendChild(li);
       }
+    }
+
+    function verify() {
+      fetch('/verifyFiles')
+      .then(response => response.json())
+      .then(data => alert(data.message));
     }
   </script>
 

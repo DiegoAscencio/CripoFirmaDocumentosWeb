@@ -3,12 +3,6 @@ const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
 const crypto = require('crypto');
-const {
-  endianness
-} = require('os');
-const {
-  exit
-} = require('process');
 
 const app = express();
 const port = 3000;
@@ -128,15 +122,14 @@ app.route('/verifyFiles')
       )
 
       if (isVerified == false) {
-        res.json({
-          'message': `Verification failed for ${file}`
-        })
-        return;
+        res.write(`Attention: Verification failed for ${file}`, function () {
+          res.end()
+          return;
+        });
       }
     }
-    res.json({
-      'message': "Verification is correct for all the files"
-    });
-  });
+    res.write('Verification passed for all files. Files are secure and integrity is preserved.');
+    res.end();
+  })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
