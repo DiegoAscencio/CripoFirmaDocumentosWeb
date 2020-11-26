@@ -1,10 +1,14 @@
+localStorage.sessionId;
+localStorage.sessionEmail;
+localStorage.userId;
+
 fetch('/Files')
     .then(response => response.json())
     .then(data => displayFiles(data.files));
 
 function displayFiles(files) {
     for (file of files) {
-        $("#files").append(`<div>${file}<a href="/downloadFile/${file}">Download</a></div>`);
+        $("#files").append(`<div>${file}<a href="/downloadFile/${file}"> Download</a></div>`);
     }
 }
 
@@ -15,7 +19,7 @@ fetch('/signedFiles')
 function displaySignedFiles(files) {
     console.log(files);
     for (file of files) {
-        $("#singedfiles").append(`<div>${file}<a href="/downloadSignedFile/${file}">Download</a></div>`);
+        $("#singedfiles").append(`<div>${file}<a href="/downloadSignedFile/${file}"> Download</a></div>`);
     }
 }
 
