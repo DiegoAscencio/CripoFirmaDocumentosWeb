@@ -11,6 +11,7 @@ const {
 } = require('process');
 
 const app = express();
+app.use(express.static("public"));
 const port = 3000;
 
 var signature;
@@ -56,7 +57,7 @@ const uploadFiles = multer({
   storageFiles
 });
 
-app.get('/', (req, res) => res.sendFile(path.join(__dirname + '/index.html')));
+app.get('/', (req, res) => res.sendFile(path.join(__dirname + '/public/index.html')));
 
 //UPLOAD FILES
 app.route('/Files')

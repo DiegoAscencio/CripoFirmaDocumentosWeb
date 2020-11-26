@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <title>Web Page</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css">
+  <script src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
+  <link rel="stylesheet" type="text/css" href="CSS/main.css">
+  <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+
+<body onload="onLoad()">
+  <!-- INICIO BARRA-->
+  <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+    <a class="navbar-brand" href="index.html">Home Page</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="oi oi-menu"></span> Menu
+    </button>
+
+    <div class="collapse navbar-collapse" id="ftco-nav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item active"><a href="index.html" class="nav-link">Home</a></li>
+        <!--<li class="nav-item"><a href="blog.html" class="nav-link">Contac Us</a></li>-->
+        <a class="nav-item"><a href="logIn.html" class="nav-link" id="signOut">Log Out</a></li>
+      </ul>
+    </div>
+  </nav>
+  <!-- FIN BARRA -->
+
+  <!-- INICIO BODY -->
+  <div class="main-container">
+    <img src="assets/iteso.jpg" alt="ITESO" id="itesoLogo">
+    <h1>Bienvenido al Home page</h1>
+    <p>Esta es una pagina web local que utiliza NodeJS y Express</p>
+    <p>Diego Ascencio Cano</p>
+  </div>
+
+  <div class="container">
+    <h1>File Upload in Node.js</h1>
+    <form method="post" action="/Files" enctype="multipart/form-data">
+      <input name="file" id="filesToUpload" type="file" />
+      <button type="submit" class="submit-btn">Submit</button>
+    </form>
+    <div id="files" class="files-table">
+    </div>
+    <form action="/signedFiles" method="post">
+      <button class="submit-btn" type="submit">Sign Files</button>
+    </form>
+    <div id="singedfiles" class="files-table">
+    </div>
+    <!--<form action="/verifyFiles" method="get">
+      <button class="submit-btn" type="submit">Verify</button>-->
+    <button class="submit-btn" type="button" onclick="verify()">Verify</button>
+
+  </div>
+  
+  <!-- FIN BODY -->
+  <script src="JS/index.js"></script>
+  <script>
+    let list_element_in_html = document.getElementById('files');
+
+    fetch('/Files')
+      .then(response => response.json())
+      .then(data => displayFiles(data.files));
+
+
+    function displayFiles(files) {
+      for (file of files) {
+        let li = document.createElement("li");
+        li.appendChild(document.createTextNode(file));
+        list_element_in_html.appendChild(li);
+      }
+    }
+
+    let list_element_in_html_signed = document.getElementById('singedfiles');
+
+    fetch('/signedFiles')
+      .then(response => response.json())
+      .then(data => displaySignedFiles(data.signedfiles));
+
+    function displaySignedFiles(files) {
+      console.log(files);
+      for (file of files) {
+        let li = document.createElement("li");
+        li.appendChild(document.createTextNode(file));
+        list_element_in_html_signed.appendChild(li);
+      }
+    }
+
+    function verify() {
+      fetch('/verifyFiles')
+      .then(response => response.json())
+      .then(data => alert(data.message));
+    }
+  </script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+  
+
+
