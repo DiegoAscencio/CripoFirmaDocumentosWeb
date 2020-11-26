@@ -140,4 +140,15 @@ app.route('/verifyFiles')
     });
   });
 
+  //DOWNLOAD FILE
+  app.get('/downloadFile/:file', function(req, res){
+    const file = `${__dirname}/uploadFiles/${req.params.file}`;
+    res.download(file); // Set disposition and send it.
+  });
+
+  app.get('/downloadSignedFile/:file', function(req, res){
+    const file = `${__dirname}/signedFiles/${req.params.file}`;
+    res.download(file); // Set disposition and send it.
+  });
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

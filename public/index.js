@@ -4,7 +4,7 @@ fetch('/Files')
 
 function displayFiles(files) {
     for (file of files) {
-        $("#files").append(`<div>${file}<a href="https://www.google.com/">Download</a></div>`);
+        $("#files").append(`<div>${file}<a href="/downloadFile/${file}">Download</a></div>`);
     }
 }
 
@@ -15,7 +15,7 @@ fetch('/signedFiles')
 function displaySignedFiles(files) {
     console.log(files);
     for (file of files) {
-        $("#singedfiles").append(`<div>${file}<a href="https://www.google.com/">Download</a></div>`);
+        $("#singedfiles").append(`<div>${file}<a href="/downloadSignedFile/${file}">Download</a></div>`);
     }
 }
 
