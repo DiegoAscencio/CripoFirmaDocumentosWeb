@@ -41,10 +41,10 @@
       <p>Diego Ascencio Cano</p>
     </div>
     <div class="column-70">
-      <h1>File Sign and Verification in NodeJs</h1>
+      <h1 class="title">File Sign and Verification in NodeJs</h1>
       <form id="loadFile" method="post" action="/Files" enctype="multipart/form-data">
         <input name="file" id="filesToUpload" type="file" />
-        <button type="submit" class="submit-btn">Submit</button>
+        <button type="submit" class="btn">Submit</button>
       </form>
       <div class="col2">
         <div class="col1">
@@ -52,14 +52,14 @@
             <th>Uploaded files</th>
           </table>
           <form action="/signedFiles" method="post">
-            <button class="submit-btn" type="submit">Sign Files</button>
+            <button class="btn" type="submit">Sign Files</button>
           </form>
         </div>
         <div class="col1">
           <table id="singedfiles" class="files-table">
             <th>Signedfiles</th>
           </table>
-          <button class="submit-btn" type="button" onclick="verify()">Verify</button>
+          <button class="btn" type="button" onclick="verify()">Verify</button>
         </div>
       </div>
 

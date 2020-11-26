@@ -64,7 +64,7 @@ app.route('/Files')
   .get((req, res) => {
     let files = []; //new array 
     fs.readdirSync(`${__dirname}/uploadFiles/`).forEach(file => {
-      files.push(file); //array function push
+      files.push(file); 
     });
     res.json({
       'files': files
@@ -77,9 +77,9 @@ app.route('/Files')
 //SIGN FILES
 app.route('/signedFiles')
   .get((req, res) => {
-    let signedfiles = []; //new array 
+    let signedfiles = []; 
     fs.readdirSync(`${__dirname}/signedFiles/`).forEach(file => {
-      signedfiles.push(file); //array function push
+      signedfiles.push(file); 
     });
     res.json({
       'signedfiles': signedfiles
@@ -88,9 +88,9 @@ app.route('/signedFiles')
   .post((req, res) => {
     let privateKey = keys.privateKey;
 
-    let files = []; //new array 
+    let files = []; 
     fs.readdirSync(`${__dirname}/uploadFiles/`).forEach(file => {
-      files.push(file); //array function push
+      files.push(file); 
     });
 
     for (file of files) {
@@ -108,9 +108,9 @@ app.route('/signedFiles')
 app.route('/verifyFiles')
   .get((req, res) => {
 
-    let files = []; //new array 
+    let files = []; 
     fs.readdirSync(`${__dirname}/uploadFiles/`).forEach(file => {
-      files.push(file); //array function push
+      files.push(file); 
     });
 
     let publicKey = keys.publicKey;
