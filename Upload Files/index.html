@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>File upload</title>
+  <style>
+    body {
+      background: #f1f1f1;
+      margin: 0;
+    }
+
+    .filelist {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .container {
+      margin: 0 auto;
+      max-width: 600px;
+      padding: 30px 20px;
+      background: #fff;
+    }
+
+    .submit-btn {
+      margin-top: 30px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      background-color: black;
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>File Upload in Node.js</h1>
+    <form method="post" action="/Files" enctype="multipart/form-data">
+      <input name="file" id="filesToUpload" type="file" />
+      <button type="submit" class="submit-btn">Submit</button>
+    </form>
+    <div id="files" class="files-table">
+    </div>
+    <form action="/signedFiles" method="post">
+      <button class="submit-btn" type="submit">Sign Files</button>
+    </form>
+    <div id="singedfiles" class="files-table">
+    </div>
+    <form action="/verifyFiles" method="get">
+      <button class="submit-btn" type="submit">Verify</button>
+    </form>
+    </form>
+
+  </div>
+
+
+  <script>
+    let list_element_in_html = document.getElementById('files');
+
+    fetch('/Files')
+      .then(response => response.json())
+      .then(data => displayFiles(data.files));
+
+
+    function displayFiles(files) {
+      for (file of files) {
+        let li = document.createElement("li");
+        li.appendChild(document.createTextNode(file));
+        list_element_in_html.appendChild(li);
+      }
+    }
+
+    let list_element_in_html_signed = document.getElementById('singedfiles');
+
+    fetch('/signedFiles')
+      .then(response => response.json())
+      .then(data => displaySignedFiles(data.signedfiles));
+
+    function displaySignedFiles(files) {
+      console.log(files);
+      for (file of files) {
+        let li = document.createElement("li");
+        li.appendChild(document.createTextNode(file));
+        list_element_in_html_signed.appendChild(li);
+      }
+    }
+  </script>
+
+</body>
+
+</html>
