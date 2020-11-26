@@ -3,6 +3,7 @@ const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
 const crypto = require('crypto');
+var https = require('https');
 const {
   endianness
 } = require('os');
@@ -11,7 +12,9 @@ const {
 } = require('process');
 
 const app = express();
+
 app.use(express.static("public"));
+
 const port = 3000;
 
 var signature;
@@ -151,4 +154,10 @@ app.route('/verifyFiles')
     res.download(file); // Set disposition and send it.
   });
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+https.createServer({
+  key: fs.readFileSync(__dirname + '/certificates/server.key'),
+  cert: fs.readFileSync(__dirname + '/certificates/server.cert')
+}, app)
+.listen(port, function () {
+  console.log('Running on port 3000. Go to https://localhost:3000/')
+})
