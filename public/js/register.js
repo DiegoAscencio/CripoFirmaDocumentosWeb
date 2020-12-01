@@ -33,7 +33,7 @@ function register() {
             xhr.send(JSON.stringify({
                 "name": data.name.value,
                 "email": data.email.value,
-                "type": new String('Register')
+                "type": 'REGISTER',
             }));
             xhr.onload = () => {
                 if (xhr.status == 200) {

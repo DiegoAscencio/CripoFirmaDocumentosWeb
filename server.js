@@ -355,7 +355,7 @@ app.route('/api/logs/')
     var data = {
       name: req.body.name,
       email: req.body.email,
-      password: req.body.type
+      type: req.body.type
     }
     var sql = 'INSERT INTO logs (name, email, type) VALUES (?,?,?)'
     var params = [data.name, data.email, data.type]
