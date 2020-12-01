@@ -43,14 +43,11 @@ function register() {
                     console.log("Error Log");
                 }
             }
-            
+
         } else if (xhr.status == 404) {
             alert("Error al registrar usuario");
         }
     }
-
-
-
 }
 
 //CLIC GO BACK

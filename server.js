@@ -260,8 +260,21 @@ app.route('/api/user/')
     });
   })
   .put((req, res) => {
-    var sql = "update user set password = ?, name = ? where email = ?"
-    var params = [md5(req.body.password), req.body.name, req.body.email]
+    var params;
+    var sql;
+
+    if(!req.body.password){
+      sql = "update user set  name = ? where email = ?"
+      params = [req.body.name, req.body.email]
+    }
+    else if(!req.body.name){
+      sql = "update user set password = ? where email = ?"
+      params = [md5(req.body.password), req.body.email]
+    }else{
+      sql = "update user set password = ?, name = ? where email = ?"
+      params = [md5(req.body.password), req.body.name, req.body.email]
+    }
+    
     db.get(sql, params, (err, row) => {
       if (err) {
         res.status(400).json({

@@ -1,3 +1,5 @@
+const e = require("express");
+
 localStorage.sessionId;
 localStorage.sessionEmail;
 localStorage.userId;
@@ -8,6 +10,7 @@ function onLoad() {
         window.location.href="login.html";
     } else {
         console.log("usuario logueado");
+        console.log(localStorage.sessionEmail);
     }
 }
 
@@ -21,7 +24,7 @@ function signOut() {
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({
         "name": 'name',
-        "email": localStorage.sessionEmail.value,
+        "email": localStorage.sessionEmail,
         "type": 'LOGOUT',
     }));
     xhr.onload = () => {
@@ -35,3 +38,54 @@ function signOut() {
 }
 
 signout.addEventListener("click", signOut);
+
+//CLICK SAVE CHANGES
+function saveChanges() {
+    let xhr = new XMLHttpRequest();
+    let data = {};
+
+    //VARIABLES FROM INPUT TEXTS
+    let userName = document.querySelector('#userName');
+    let userPassword = document.querySelector('#userPassword');
+
+    data.name = userName;
+    data.password = userPassword;
+    
+    let email = localStorage.sessionEmail;
+
+    let endpoint = `https://localhost:3000/api/user/`
+    xhr.open('PUT', endpoint);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({
+        "name": data.name.value,
+        "email": email,
+        "password": data.password.value
+    }));
+    xhr.onload = () => {
+        if (xhr.status == 200) {
+            let user = JSON.parse(xhr.response);
+            console.log(JSON.parse(xhr.response));
+            alert(`Registrados los cambios del usuario ${data.name.value}`);
+            endpoint = `https://localhost:3000/api/logs/`
+
+            xhr.open('POST', endpoint);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({
+                "name": data.name.value,
+                "email": email,
+                "type": 'CHANGE',
+            }));
+            xhr.onload = () => {
+                if (xhr.status == 200) {
+                    console.log("Created Log");
+                    window.location.href = "login.html";
+                } else if (xhr.status == 404) {
+                    console.log("Error Log");
+                }
+            }
+
+        } else if (xhr.status == 404) {
+            alert("Error al realizar cambios usuario");
+        }
+    }
+}
