@@ -9,7 +9,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css">
   <script src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
-  <link rel="stylesheet" type="text/css" href="css/login.css">
+  <link rel="stylesheet" type="text/css" href="css/editProfile.css">
   <link rel="stylesheet" type="text/css" href="css/index.css">
 </head>
 
@@ -37,34 +37,29 @@
   <div class="main-container">
     <div class="column-30">
       <img src="images/iteso.jpg" alt="ITESO" id="itesoLogo">
-      <h1>Bienvenido al Home page</h1>
-      <p>Esta es una pagina web local que utiliza NodeJS y Express</p>
+      <h1>Edit Profile</h1>
+      <p>Aqui puedes modificar tus perfil</p>
       <p>Diego Ascencio Cano</p>
     </div>
-    <div class="column-70">
-      <h1 class="title">File Sign and Verification in NodeJs</h1>
-      <form id="loadFile" method="post" action="/Files" enctype="multipart/form-data">
-        <input name="file" id="filesToUpload" type="file" />
-        <button type="submit" class="btn">Submit</button>
-      </form>
-      <div class="col2">
-        <div class="col1">
-          <table id="files" class="files-table">
-            <th>Uploaded files</th>
-          </table>
-          <form action="/signedFiles" method="post">
-            <button class="btn" type="submit">Sign Files</button>
-          </form>
-        </div>
-        <div class="col1">
-          <table id="singedfiles" class="files-table">
-            <th>Signedfiles</th>
-          </table>
-          <button class="btn" type="button" onclick="verify()">Verify</button>
-        </div>
-      </div>
+    <div class="modal-dialog text-center" >
+      <div class="col-sm-8 main-section">
+        <div class="modal-content">
+          <p>Si no quieres editar un campo dejalo vacio, de otra manera se guardara el cambio</p>
+          <form class=col-12>
+            <div class="form-group" >
+              <input id="userName" type="text" class="form-control" placeholder="User Name" >
+            </div>
+            <div class="form-group">
+              <input id="userPassword" type="password" class="form-control" placeholder="Password">
+            </div>
 
-    </div>
+            <button type="button" class="btn" onclick="saveChanges()">
+              Save Changes
+            </button>
+          </form>
+        </div> <!---End of content--->
+      </div>
+   </div>
   </div>
 
   <!-- FIN BODY -->
