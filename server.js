@@ -303,7 +303,7 @@ app.route('/api/login/')
       }
       if (row !== undefined && row["1"] == 1) {
         res.status(200).json({
-          "message": "Datos correctos"
+          "email":req.body.email
         });
       } else {
         res.status(404).json({

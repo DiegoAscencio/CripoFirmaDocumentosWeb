@@ -27,7 +27,7 @@ function logIn() {
             console.log(JSON.parse(xhr.response));
             alert(`Bienvenido ${data.email.value}`);
             localStorage.sessionId = "TOKEN";
-            localStorage.sessionEmail = user.email;
+            localStorage.sessionEmail = data.email.value;
 
             if (xhr.status == 200) {
                 endpoint = `https://localhost:3000/api/logs/`
