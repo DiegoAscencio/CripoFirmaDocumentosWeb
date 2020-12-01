@@ -213,7 +213,7 @@ app.route('/api/user/:id')
       })
     });
   })
-  
+
 
 //POST NEW USER, UPDATE DATA FROM USER
 app.route('/api/user/')
@@ -254,7 +254,7 @@ app.route('/api/user/')
   })
   .put((req, res) => {
     var sql = "update user set password = ?, name = ? where email = ?"
-    var params = [md5(req.body.password),req.body.name,req.body.email]
+    var params = [md5(req.body.password), req.body.name, req.body.email]
     db.get(sql, params, (err, row) => {
       if (err) {
         res.status(400).json({
@@ -267,6 +267,47 @@ app.route('/api/user/')
         "data": row
       })
     });
+  });
+
+//LOGIN
+app.route('/api/login/')
+  .post((req, res) => {
+    var errors = []
+    if (!req.body.password) {
+      errors.push("No password specified");
+    }
+    if (!req.body.email) {
+      errors.push("No email specified");
+    }
+    if (errors.length) {
+      res.status(400).json({
+        "error": errors.join(",")
+      });
+      return;
+    }
+    var sql = 'SELECT 1 FROM user where email = ? and password = ?'
+    var params = [req.body.email, md5(req.body.password)]
+    db.get(sql, params, (err, row) => {
+      if (err) {
+        res.status(400).json({
+          "error": err.message
+        });
+        return;
+      }
+      if(row !== undefined && row["1"] == 1){
+        res.status(200).json({
+          "message": "Datos correctos"
+        });
+      }else{
+        res.status(400).json({
+          "error": "User or password incorrect"
+        });
+        return;
+      }
+    });
+  })
+  .put((req, res) => {
+
   });
 
 https.createServer({

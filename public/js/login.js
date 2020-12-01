@@ -8,12 +8,6 @@ let userPassword = document.querySelector('#userPassword');
 
 //CLICK LOGIN
 function logIn() {
-    let xhr = new XMLHttpRequest();
-    let data = {};
-
-    data.email = userEmail;
-    data.password = userPassword;
-
     let endpoint = `https://localhost:3000/api/login`
     xhr.open('POST', endpoint);
     xhr.setRequestHeader('Content-Type', 'application/json');
