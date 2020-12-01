@@ -1,4 +1,0 @@
-openssl dgst -sha256 data.txt > hash
-openssl rsautl -sign -inkey privatekey.pem -keyform PEM -in hash >signature
-Verifying just the signature:
-openssl rsautl -verify -inkey publickey.pem -pubin -keyform PEM -in signature

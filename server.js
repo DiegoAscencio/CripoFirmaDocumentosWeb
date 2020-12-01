@@ -3,6 +3,9 @@ const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
 const crypto = require('crypto');
+var md5 = require('md5')
+
+var db = require("./database.js")
 var https = require('https');
 const {
   endianness
@@ -13,11 +16,22 @@ const {
 
 const app = express();
 
+var bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
+app.use(bodyParser.json());
+
 app.use(express.static("public"));
 
 const port = 3000;
 
 var signature;
+
+/*************************************
+ *  RSA
+ *************************************/
+
 
 //Private and public keys
 let keys = crypto.generateKeyPairSync('rsa', {
@@ -31,6 +45,10 @@ let keys = crypto.generateKeyPairSync('rsa', {
     format: 'pem'
   }
 });
+
+/*************************************
+ *  STORAGE
+ *************************************/
 
 //STORAGE Files
 const storage = multer.diskStorage({
@@ -67,7 +85,7 @@ app.route('/Files')
   .get((req, res) => {
     let files = []; //new array 
     fs.readdirSync(`${__dirname}/uploadFiles/`).forEach(file => {
-      files.push(file); 
+      files.push(file);
     });
     res.json({
       'files': files
@@ -77,12 +95,13 @@ app.route('/Files')
     res.redirect('/');
   });
 
+
 //SIGN FILES
 app.route('/signedFiles')
   .get((req, res) => {
-    let signedfiles = []; 
+    let signedfiles = [];
     fs.readdirSync(`${__dirname}/signedFiles/`).forEach(file => {
-      signedfiles.push(file); 
+      signedfiles.push(file);
     });
     res.json({
       'signedfiles': signedfiles
@@ -91,9 +110,9 @@ app.route('/signedFiles')
   .post((req, res) => {
     let privateKey = keys.privateKey;
 
-    let files = []; 
+    let files = [];
     fs.readdirSync(`${__dirname}/uploadFiles/`).forEach(file => {
-      files.push(file); 
+      files.push(file);
     });
 
     for (file of files) {
@@ -111,9 +130,9 @@ app.route('/signedFiles')
 app.route('/verifyFiles')
   .get((req, res) => {
 
-    let files = []; 
+    let files = [];
     fs.readdirSync(`${__dirname}/uploadFiles/`).forEach(file => {
-      files.push(file); 
+      files.push(file);
     });
 
     let publicKey = keys.publicKey;
@@ -143,21 +162,117 @@ app.route('/verifyFiles')
     });
   });
 
-  //DOWNLOAD FILE
-  app.get('/downloadFile/:file', function(req, res){
-    const file = `${__dirname}/uploadFiles/${req.params.file}`;
-    res.download(file); // Set disposition and send it.
-  });
+//DOWNLOAD FILE
+app.get('/downloadFile/:file', function (req, res) {
+  const file = `${__dirname}/uploadFiles/${req.params.file}`;
+  res.download(file); // Set disposition and send it.
+});
 
-  app.get('/downloadSignedFile/:file', function(req, res){
-    const file = `${__dirname}/signedFiles/${req.params.file}`;
-    res.download(file); // Set disposition and send it.
+app.get('/downloadSignedFile/:file', function (req, res) {
+  const file = `${__dirname}/signedFiles/${req.params.file}`;
+  res.download(file); // Set disposition and send it.
+});
+
+
+/*************************************
+ *  SQL LITE
+ ************************** ***********/
+//GET List of users
+app.get("/api/users", (req, res, next) => {
+  var sql = "select * from user"
+  var params = []
+  db.all(sql, params, (err, rows) => {
+    if (err) {
+      res.status(400).json({
+        "error": err.message
+      });
+      return;
+    }
+    res.json({
+      "message": "success",
+      "data": rows
+    })
+  });
+});
+
+//USERS BY ID
+app.route('/api/user/:id')
+  .get((req, res) => {
+    var sql = "select * from user where id = ?"
+    var params = [req.params.id]
+    db.get(sql, params, (err, row) => {
+      if (err) {
+        res.status(400).json({
+          "error": err.message
+        });
+        return;
+      }
+      res.json({
+        "message": "success",
+        "data": row
+      })
+    });
+  })
+  
+
+//POST NEW USER, UPDATE DATA FROM USER
+app.route('/api/user/')
+  .post((req, res) => {
+    var errors = []
+    if (!req.body.password) {
+      errors.push("No password specified");
+    }
+    if (!req.body.email) {
+      errors.push("No email specified");
+    }
+    if (errors.length) {
+      res.status(400).json({
+        "error": errors.join(",")
+      });
+      return;
+    }
+    var data = {
+      name: req.body.name,
+      email: req.body.email,
+      password: md5(req.body.password)
+    }
+    var sql = 'INSERT INTO user (name, email, password) VALUES (?,?,?)'
+    var params = [data.name, data.email, data.password]
+    db.run(sql, params, function (err, result) {
+      if (err) {
+        res.status(400).json({
+          "error": err.message
+        })
+        return;
+      }
+      res.json({
+        "message": "success",
+        "data": data,
+        "id": this.lastID
+      })
+    });
+  })
+  .put((req, res) => {
+    var sql = "update user set password = ?, name = ? where email = ?"
+    var params = [md5(req.body.password),req.body.name,req.body.email]
+    db.get(sql, params, (err, row) => {
+      if (err) {
+        res.status(400).json({
+          "error": err.message
+        });
+        return;
+      }
+      res.json({
+        "message": "success",
+        "data": row
+      })
+    });
   });
 
 https.createServer({
-  key: fs.readFileSync(__dirname + '/certificates/server.key'),
-  cert: fs.readFileSync(__dirname + '/certificates/server.cert')
-}, app)
-.listen(port, function () {
-  console.log('Running on port 3000. Go to https://localhost:3000/')
-})
+    key: fs.readFileSync(__dirname + '/certificates/server.key'),
+    cert: fs.readFileSync(__dirname + '/certificates/server.cert')
+  }, app)
+  .listen(port, function () {
+    console.log('Running on port 3000. Go to https://localhost:3000/')
+  })
