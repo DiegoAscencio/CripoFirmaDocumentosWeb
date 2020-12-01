@@ -301,11 +301,11 @@ app.route('/api/login/')
         });
         return;
       }
-      if(row !== undefined && row["1"] == 1){
+      if (row !== undefined && row["1"] == 1) {
         res.status(200).json({
           "message": "Datos correctos"
         });
-      }else{
+      } else {
         res.status(404).json({
           "error": "User or password incorrect"
         });
@@ -314,7 +314,64 @@ app.route('/api/login/')
     });
   })
   .put((req, res) => {
+    //
+  });
 
+//POST LOGS, GET LOGS
+app.route('/api/logs/')
+  .get((req, res) => {
+    var sql = "select * from logs"
+    var params = []
+    db.all(sql, params, (err, rows) => {
+      if (err) {
+        res.status(400).json({
+          "error": err.message
+        });
+        return;
+      }
+      res.json({
+        "message": "success",
+        "data": rows
+      })
+    });
+  })
+  .post((req, res) => {
+    var errors = []
+    if (!req.body.name) {
+      errors.push("No name specified");
+    }
+    if (!req.body.email) {
+      errors.push("No email specified");
+    }
+    if (!req.body.type) {
+      errors.push("No type specified");
+    }
+    if (errors.length) {
+      res.status(400).json({
+        "error": errors.join(",")
+      });
+      return;
+    }
+    var data = {
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.type
+    }
+    var sql = 'INSERT INTO logs (name, email, type) VALUES (?,?,?)'
+    var params = [data.name, data.email, data.type]
+    db.run(sql, params, function (err, result) {
+      if (err) {
+        res.status(400).json({
+          "error": err.message
+        })
+        return;
+      }
+      res.status(200).json({
+        "message": "success",
+        "data": data,
+        "id": this.lastID
+      })
+    });
   });
 
 https.createServer({

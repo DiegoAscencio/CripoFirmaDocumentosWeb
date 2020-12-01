@@ -10,6 +10,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
       throw err
     }else{
         console.log('Connected to the SQLite database.')
+        console.log('Creating users table')
         db.run(`CREATE TABLE user (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name text, 
@@ -26,7 +27,24 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
                 db.run(insert, ["admin","admin@example.com",md5("admin123456")])
                 db.run(insert, ["user","user@example.com",md5("user123456")])
             }
-        });  
+        });
+        console.log('Creating logs table')
+        db.run(`CREATE TABLE logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name text , 
+            email text, 
+            type text,
+            timeon DATE DEFAULT (datetime('now','localtime'))
+            )`,
+        (err) => {
+            if (err) {
+                // Table already created
+            }else{
+                // Table just created, creating some rows
+                var insert = 'INSERT INTO logs (name, email, type) VALUES (?,?,?)'
+                db.run(insert, ["admin","admin@example.com",'TABLE_INSERT'])
+            }
+        }); 
     }
 });
 
