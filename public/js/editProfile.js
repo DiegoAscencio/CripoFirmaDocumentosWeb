@@ -3,14 +3,14 @@ const e = require("express");
 localStorage.sessionId;
 localStorage.sessionEmail;
 localStorage.userId;
+localStorage.token;
 
 function onLoad() {
-    if (localStorage.sessionId == undefined || localStorage.sessionId == "") {
+    if (localStorage.sessionId == undefined || localStorage.sessionId == "" || localStorage.token == "" || localStorage.token == undefined) {
         console.log("no hay usuario logueado");
-        window.location.href="login.html";
+        window.location.href = "login.html";
     } else {
         console.log("usuario logueado");
-        console.log(localStorage.sessionEmail);
     }
 }
 

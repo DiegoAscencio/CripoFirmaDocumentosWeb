@@ -1,6 +1,7 @@
 localStorage.sessionId;
 localStorage.sessionEmail;
 localStorage.userId;
+localStorage.token;
 
 fetch('/api/logs/')
     .then(response => response.json())
@@ -12,7 +13,7 @@ function displayFiles(files) {
     }
 }
 function onLoad() {
-    if (localStorage.sessionId == undefined || localStorage.sessionId == "") {
+    if (localStorage.sessionId == undefined || localStorage.sessionId == "" || localStorage.token == "" || localStorage.token == undefined) {
         console.log("no hay usuario logueado");
         window.location.href = "login.html";
     } else {

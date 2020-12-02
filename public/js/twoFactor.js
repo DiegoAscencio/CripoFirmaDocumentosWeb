@@ -1,6 +1,7 @@
 localStorage.sessionId;
 localStorage.sessionEmail;
 localStorage.userId;
+localStorage.token;
 
 
 fetch('/api/qr/')
@@ -30,6 +31,7 @@ function verifyToken() {
     xhr.onload = () => {
         if (xhr.status == 200) {
             alert(`Token Correcto`);
+            localStorage.token = data.token.value;
             if (xhr.status == 200) {
                 endpoint = `https://localhost:3000/api/logs/`
 
@@ -53,8 +55,24 @@ function verifyToken() {
                 alert("Error al registrar usuario");
             }
 
-        } else if (xhr.status == 404) {
-            alert("Usuario o contraseña incorrectos");
+        } else {
+            alert("Bad Token");
+            endpoint = `https://localhost:3000/api/logs/`
+
+            xhr.open('POST', endpoint);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({
+                "name": 'name',
+                "email": localStorage.sessionEmail,
+                "type": 'CORRECT_TOKEN',
+            }));
+            xhr.onload = () => {
+                if (xhr.status == 200) {
+                    console.log("Created Log");
+                } else if (xhr.status == 404) {
+                    console.log("Error Log");
+                }
+            }
         }
     }
 }

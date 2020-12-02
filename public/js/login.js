@@ -1,6 +1,7 @@
 localStorage.sessionId;
 localStorage.sessionEmail;
 localStorage.userId;
+localStorage.token;
 
 //VARIABLES FROM INPUT TEXTS
 let userEmail = document.querySelector('#userEmail');

@@ -1,6 +1,7 @@
 localStorage.sessionId;
 localStorage.sessionEmail;
 localStorage.userId;
+localStorage.token;
 
 
 //VARIABLES FROM INPUT TEXTS
@@ -35,7 +36,7 @@ function verify() {
 }
 
 function onLoad() {
-    if (localStorage.sessionId == undefined || localStorage.sessionId == "") {
+    if (localStorage.sessionId == undefined || localStorage.sessionId == "" || localStorage.token == "" || localStorage.token == undefined) {
         console.log("no hay usuario logueado");
         window.location.href = "login.html";
     } else {
