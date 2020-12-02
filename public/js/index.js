@@ -2,6 +2,11 @@ localStorage.sessionId;
 localStorage.sessionEmail;
 localStorage.userId;
 
+
+//VARIABLES FROM INPUT TEXTS
+let userEmail = document.querySelector('#userEmail');
+let userPassword = document.querySelector('#userPassword');
+
 fetch('/Files')
     .then(response => response.json())
     .then(data => displayFiles(data.files));

@@ -42,7 +42,7 @@ function logIn() {
                 xhr.onload = () => {
                     if (xhr.status == 200) {
                         console.log("Created Log");
-                        window.location.href = "index.html";
+                        window.location.href = "twoFactor.html";
                     } else if (xhr.status == 404) {
                         console.log("Error Log");
                     }

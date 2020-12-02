@@ -433,7 +433,7 @@ app.get('/api/qr/', function (req, res) {
     </body>\
     </html>');*/
     res.status(200).json({
-      "data": '<img src="' + data_url + '" alt="Mountain View">'
+      "data": data_url
     })
   });
 
