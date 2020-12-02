@@ -1,0 +1,68 @@
+
+.main-container {
+    padding: 35px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: center;
+}
+
+#itesoLogo {
+    width: 35%;
+    margin: 25px 75px 75px 75px;
+}
+
+.column-30 {
+    width: 30%;
+}
+.column-70 {
+    width: 70%;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+table {
+    border-collapse: collapse;
+    border: 1px solid black;
+    width: 100%;
+}
+
+th {
+    border: solid thin;
+}
+
+.col2 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.col1 {
+    width: 100%;
+    padding: 20px;
+}
+button {
+    margin-top: 20px;
+    min-width: 150px;
+    border-radius: 4px;
+}
+
+#loadFile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title {
+    margin-bottom: 50px;
+}
+
+.table-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
