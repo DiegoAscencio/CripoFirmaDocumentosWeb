@@ -4,9 +4,14 @@ const multer = require('multer');
 const fs = require('fs');
 const crypto = require('crypto');
 var md5 = require('md5')
+var speakeasy = require("speakeasy");
+var QRCode = require('qrcode');
 
 var db = require("./database.js")
 var https = require('https');
+
+const app = express();
+
 const {
   endianness
 } = require('os');
@@ -14,7 +19,7 @@ const {
   exit
 } = require('process');
 
-const app = express();
+
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -263,18 +268,17 @@ app.route('/api/user/')
     var params;
     var sql;
 
-    if(!req.body.password){
+    if (!req.body.password) {
       sql = "update user set  name = ? where email = ?"
       params = [req.body.name, req.body.email]
-    }
-    else if(!req.body.name){
+    } else if (!req.body.name) {
       sql = "update user set password = ? where email = ?"
       params = [md5(req.body.password), req.body.email]
-    }else{
+    } else {
       sql = "update user set password = ?, name = ? where email = ?"
       params = [md5(req.body.password), req.body.name, req.body.email]
     }
-    
+
     db.get(sql, params, (err, row) => {
       if (err) {
         res.status(400).json({
@@ -316,7 +320,7 @@ app.route('/api/login/')
       }
       if (row !== undefined && row["1"] == 1) {
         res.status(200).json({
-          "email":req.body.email
+          "email": req.body.email
         });
       } else {
         res.status(404).json({
@@ -386,6 +390,78 @@ app.route('/api/logs/')
       })
     });
   });
+
+
+let globalSecret;
+/*************************************
+ * MULTIFACTOR
+ ************************** ***********/
+
+app.get('/api/qr/', function (req, res) {
+  //Generate a secret key First.
+  var secret = speakeasy.generateSecret({
+    length: 30
+  });
+
+  globalSecret = secret;
+  console.log('secret.base32 : ' + secret.base32);
+
+  //using speakeasy generate one time token.
+  var token = speakeasy.totp({
+    secret: secret.base32,
+    encoding: 'base32',
+    time: 120
+  });
+
+  console.log('token : ' + token);
+
+  QRCode.toDataURL(secret.otpauth_url, function (err, data_url) {
+    //console.log(data_url);
+
+    // Display this data URL to the user in an <img> tag 
+    /*res.end('<!DOCTYPE html>\
+    <html lang="en">\
+    <head>\
+        <meta charset="UTF-8">\
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">\
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">\
+        <title>2FA example</title>\
+    </head>\
+    <body>\
+        <img src="' + data_url + '" alt="Mountain View">\
+        <div class="col-lg-2 col-sm-3 col-xs-6"> OTP : ' + token + ' </div>\
+    </body>\
+    </html>');*/
+    res.status(200).json({
+      "data": '<img src="' + data_url + '" alt="Mountain View">'
+    })
+  });
+
+  //<div class="col-lg-2 col-sm-3 col-xs-6"> OTP : ' + token + ' </div>
+});
+
+//Verify OTP
+app.post('/api/verify/', function (req, res) {
+  var token = req.body.token;
+
+  var tokenValidates = speakeasy.totp.verify({
+    secret: globalSecret.base32,
+    encoding: 'base32',
+    token: token,
+    //window: 6
+  });
+  if (tokenValidates) {
+    res.status(200).json({
+      "message": "success",
+      "data": tokenValidates,
+    })
+  } else {
+    res.status(400).json({
+      "message": "error",
+      "data": tokenValidates,
+    })
+  }
+});
 
 https.createServer({
     key: fs.readFileSync(__dirname + '/certificates/server.key'),
