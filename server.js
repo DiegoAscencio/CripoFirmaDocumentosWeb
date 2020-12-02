@@ -268,6 +268,13 @@ app.route('/api/user/')
     var params;
     var sql;
 
+    if(!req.body.password && !req.body.name){
+      res.status(400).json({
+        "error": "Empty fields"
+      });
+      return;
+    }
+    
     if (!req.body.password) {
       sql = "update user set  name = ? where email = ?"
       params = [req.body.name, req.body.email]
@@ -416,28 +423,10 @@ app.get('/api/qr/', function (req, res) {
   console.log('token : ' + token);
 
   QRCode.toDataURL(secret.otpauth_url, function (err, data_url) {
-    //console.log(data_url);
-
-    // Display this data URL to the user in an <img> tag 
-    /*res.end('<!DOCTYPE html>\
-    <html lang="en">\
-    <head>\
-        <meta charset="UTF-8">\
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">\
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">\
-        <title>2FA example</title>\
-    </head>\
-    <body>\
-        <img src="' + data_url + '" alt="Mountain View">\
-        <div class="col-lg-2 col-sm-3 col-xs-6"> OTP : ' + token + ' </div>\
-    </body>\
-    </html>');*/
     res.status(200).json({
       "data": data_url
     })
   });
-
-  //<div class="col-lg-2 col-sm-3 col-xs-6"> OTP : ' + token + ' </div>
 });
 
 //Verify OTP
