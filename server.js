@@ -234,7 +234,7 @@ app.route('/FilesE')
     })
   })
   .post(upload.single('file'), (req, res) => {
-    res.redirect('/');
+    res.redirect('/encrypt.html');
   });
 
 
@@ -270,7 +270,7 @@ app.route('/encryptedFiles')
     }).catch(err => {
       // got error
     });
-    
+
   });
 
 //DECRYPT FILES
@@ -281,17 +281,15 @@ app.route('/decryptFiles')
     fs.readdirSync(`${__dirname}/uploadFiles/`).forEach(file => {
       files.push(file);
     });
-
+    
     async function wrapperFunc() {
       for (file of files) {
         let filegerData = new fileger.File(`${__dirname}/encryptedFiles/${file}`);
-        filegerData.decrypt(password);
+        await filegerData.decrypt(password);
       }
     }
     wrapperFunc().then(result => {
-      res.json({
-        'message': "Decrpytion is correct for all the files"
-      });
+      res.redirect('/encrypt.html');
     }).catch(err => {
       res.status(400).json({
         'message': "Decrpytion incorrect on some files"
