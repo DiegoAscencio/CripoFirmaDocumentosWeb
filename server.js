@@ -94,22 +94,6 @@ const uploadFiles = multer({
   storageFiles
 });
 
-const storageE = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, './uploadFilesEncrypt');
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  }
-});
-
-const uploadE = multer({
-  storageE
-});
-
-/**
- * ENCRTPY
- */
 //STORAGE Encrypted files (Encryption)
 const storageFilesE = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -242,15 +226,15 @@ app.get('/downloadSignedFile/:file', function (req, res) {
 app.route('/FilesE')
   .get((req, res) => {
     let files = []; //new array 
-    fs.readdirSync(`${__dirname}/uploadFilesEncrypt/`).forEach(file => {
+    fs.readdirSync(`${__dirname}/uploadFiles/`).forEach(file => {
       files.push(file);
     });
     res.json({
       'files': files
     })
   })
-  .post(uploadE.single('file'), (req, res) => {
-    res.redirect('/encrypt.html');
+  .post(upload.single('file'), (req, res) => {
+    res.redirect('/');
   });
 
 
@@ -267,18 +251,25 @@ app.route('/encryptedFiles')
   })
   .post((req, res) => {
     let files = [];
-    fs.readdirSync(`${__dirname}/uploadFilesEncrypt/`).forEach(file => {
+    fs.readdirSync(`${__dirname}/uploadFiles/`).forEach(file => {
       files.push(file);
     });
 
-    for (file of files) {
-      fs.copyFile(`${__dirname}/uploadFilesEncrypt/${file}`, `${__dirname}/encryptedFiles/${file}`, (err) => {
-        if (err) throw err;
-      });
-      let filegerData = new fileger.File(`${__dirname}/encryptedFiles/${file}`);
-      filegerData.encrypt("password");
+    async function wrapperFunc() {
+      for (file of files) {
+        fs.copyFile(`${__dirname}/uploadFiles/${file}`, `${__dirname}/encryptedFiles/${file}`, (err) => {
+          if (err) throw err;
+        });
+        let filegerData = new fileger.File(`${__dirname}/encryptedFiles/${file}`);
+        filegerData.encrypt("password");
+      }
     }
-    res.redirect('/encrypt.html');
+    wrapperFunc().then(result => {
+      res.redirect('/encrypt.html');
+    }).catch(err => {
+      // got error
+    });
+    
   });
 
 //DECRYPT FILES
@@ -286,7 +277,7 @@ app.route('/decryptFiles')
   .post((req, res) => {
     let password = req.body.password;
     let files = [];
-    fs.readdirSync(`${__dirname}/uploadFilesEncrypt/`).forEach(file => {
+    fs.readdirSync(`${__dirname}/uploadFiles/`).forEach(file => {
       files.push(file);
     });
 
@@ -307,7 +298,7 @@ app.route('/decryptFiles')
 
 //DOWNLOAD FILE
 app.get('/downloadFileE/:file', function (req, res) {
-  const file = `${__dirname}/uploadFilesEncrypt/${req.params.file}`;
+  const file = `${__dirname}/uploadFiles/${req.params.file}`;
   res.download(file); // Set disposition and send it.
 });
 
