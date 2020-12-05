@@ -25,9 +25,21 @@ function displaySignedFiles(files) {
 }
 
 function decrypt() {
-    fetch('/decryptFiles')
-        .then(response => response.json())
-        .then(data => alert(data.message));
+    let xhr = new XMLHttpRequest();
+    let endpoint = `https://localhost:3000/decryptFiles/`
+    xhr.open('POST', endpoint);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({
+        "password": 'password'
+    }));
+
+    xhr.onload = () => {
+        if (xhr.status == 200) {
+            alert("Good");
+        } else if (xhr.status == 404) {
+            alert("Error");
+        }
+    }
 }
 
 function onLoad() {

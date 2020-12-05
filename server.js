@@ -283,8 +283,8 @@ app.route('/encryptedFiles')
 
 //DECRYPT FILES
 app.route('/decryptFiles')
-  .get((req, res) => {
-
+  .post((req, res) => {
+    let password = req.body.password;
     let files = [];
     fs.readdirSync(`${__dirname}/uploadFilesEncrypt/`).forEach(file => {
       files.push(file);
@@ -293,7 +293,7 @@ app.route('/decryptFiles')
     async function wrapperFunc() {
       for (file of files) {
         let filegerData = new fileger.File(`${__dirname}/encryptedFiles/${file}`);
-        filegerData.decrypt("password");
+        filegerData.decrypt(password);
       }
     }
     wrapperFunc().then(result => {
