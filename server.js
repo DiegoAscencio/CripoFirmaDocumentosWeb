@@ -261,7 +261,13 @@ app.route('/encryptedFiles')
         fs.copyFile(`${__dirname}/uploadFiles/${file}`, `${__dirname}/encryptedFiles/${file}`, (err) => {
           if (err) throw err;
         });
+        console.log("Wait result");
+        for(i=0;i<100000;i++);
+        console.log("End wait");
         let filegerData = new fileger.File(`${__dirname}/encryptedFiles/${file}`);
+        console.log("Wait result");
+        for(i=0;i<100000;i++);
+        console.log("End wait");
         filegerData.encrypt(password);
       }
     }
@@ -285,11 +291,18 @@ app.route('/decryptFiles')
     async function wrapperFunc() {
       for (file of files) {
         let filegerData = new fileger.File(`${__dirname}/encryptedFiles/${file}`);
-        await filegerData.decrypt(password);
+        filegerData.decrypt(password);
       }
     }
+    let i = 0;
+    console.log("Wait result");
+    for(i=0;i<100000;i++);
+    console.log("End wait");
+
     wrapperFunc().then(result => {
-      res.redirect('/encrypt.html');
+      res.json({
+        'message': "Decrpytion is correct for all the files"
+      });
     }).catch(err => {
       res.status(400).json({
         'message': "Decrpytion incorrect on some files"
