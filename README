@@ -5,3 +5,4 @@ npm install speakeasy @types/speakeasy
 npm install md5
 npm install sqlite3
 npm install qrcode
+npm install fileger

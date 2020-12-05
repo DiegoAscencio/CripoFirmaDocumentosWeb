@@ -1,0 +1,7 @@
+windows: B1Admin
+
+
+
+Sap: User: manager
+
+pass: B1Admin

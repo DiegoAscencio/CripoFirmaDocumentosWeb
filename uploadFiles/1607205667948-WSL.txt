@@ -1,0 +1,15 @@
+##Parametros del sistema
+openssl dsaparam 2048 </dev/random> dsaparams.pem
+
+##Generar llaves
+openssl gendsa -out dsarootkey.pem dsaparams.pem
+
+##Certificado Raiz autofirmado
+openssl req -newkey dsa:dsaparams.pem -keyout dsarootkey.pem -new -x509 -days 365 -out rootcert.pem
+pass: 12345
+
+##Ver certificado
+openssl x509 -text -in rootcert.pem | more
+openssl asn1parse -in rootcert.pem | more
+
+##Certificado para cliente

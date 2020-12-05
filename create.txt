@@ -9,3 +9,6 @@ https://developerhowto.com/2018/12/29/build-a-rest-api-with-node-js-and-express-
 
 QR
 https://www.oodlestechnologies.com/blogs/two-factor-authentication-using-nodejs/
+
+ENCRYPTION
+https://paul-hanneforth-o.medium.com/how-to-encrypt-files-with-nodejs-1d8fa7cefe2d

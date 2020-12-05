@@ -6,6 +6,7 @@ const crypto = require('crypto');
 var md5 = require('md5')
 var speakeasy = require("speakeasy");
 var QRCode = require('qrcode');
+const fileger = require("fileger")
 
 var db = require("./database.js")
 var https = require('https');
@@ -61,6 +62,9 @@ let keys = crypto.generateKeyPairSync('rsa', {
 /*************************************
  *  STORAGE
  *************************************/
+/**
+ * SIGN
+ */
 
 //STORAGE Files
 const storage = multer.diskStorage({
@@ -90,8 +94,43 @@ const uploadFiles = multer({
   storageFiles
 });
 
+const storageE = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './uploadFilesEncrypt');
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  }
+});
+
+const uploadE = multer({
+  storageE
+});
+
+/**
+ * ENCRTPY
+ */
+//STORAGE Encrypted files (Encryption)
+const storageFilesE = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './encryptedFiles');
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  }
+});
+
+const uploadFilesE = multer({
+  storageFilesE
+});
+
+
+
 app.get('/', (req, res) => res.sendFile(path.join(__dirname + '/public/index.html')));
 
+/*************************************
+ *  SIGN
+ *************************************/
 //UPLOAD FILES
 app.route('/Files')
   .get((req, res) => {
@@ -185,6 +224,97 @@ app.get('/downloadSignedFile/:file', function (req, res) {
   res.download(file); // Set disposition and send it.
 });
 
+//DOWNLOAD FILE
+app.get('/downloadFile/:file', function (req, res) {
+  const file = `${__dirname}/uploadFiles/${req.params.file}`;
+  res.download(file); // Set disposition and send it.
+});
+
+app.get('/downloadSignedFile/:file', function (req, res) {
+  const file = `${__dirname}/signedFiles/${req.params.file}`;
+  res.download(file); // Set disposition and send it.
+});
+
+/*************************************
+ *  ENCRYPT
+ *************************************/
+//UPLOAD FILES
+app.route('/FilesE')
+  .get((req, res) => {
+    let files = []; //new array 
+    fs.readdirSync(`${__dirname}/uploadFilesEncrypt/`).forEach(file => {
+      files.push(file);
+    });
+    res.json({
+      'files': files
+    })
+  })
+  .post(uploadE.single('file'), (req, res) => {
+    res.redirect('/encrypt.html');
+  });
+
+
+//ENCRYPT FILES
+app.route('/encryptedFiles')
+  .get((req, res) => {
+    let encryptedfiles = [];
+    fs.readdirSync(`${__dirname}/encryptedFiles/`).forEach(file => {
+      encryptedfiles.push(file);
+    });
+    res.json({
+      'encryptedfiles': encryptedfiles
+    })
+  })
+  .post((req, res) => {
+    let files = [];
+    fs.readdirSync(`${__dirname}/uploadFilesEncrypt/`).forEach(file => {
+      files.push(file);
+    });
+
+    for (file of files) {
+      fs.copyFile(`${__dirname}/uploadFilesEncrypt/${file}`, `${__dirname}/encryptedFiles/${file}`, (err) => {
+        if (err) throw err;
+      });
+      let filegerData = new fileger.File(`${__dirname}/encryptedFiles/${file}`);
+      filegerData.encrypt("password");
+    }
+    res.redirect('/encrypt.html');
+  });
+
+//DECRYPT FILES
+app.route('/decryptFiles')
+  .get((req, res) => {
+
+    let files = [];
+    fs.readdirSync(`${__dirname}/uploadFilesEncrypt/`).forEach(file => {
+      files.push(file);
+    });
+
+    async function wrapperFunc() {
+      for (file of files) {
+        let filegerData = new fileger.File(`${__dirname}/encryptedFiles/${file}`);
+        filegerData.decrypt("password");
+      }
+    }
+    wrapperFunc().then(result => {
+      res.json({
+        'message': "Decrpytion is correct for all the files"
+      });
+    }).catch(err => {
+      // got error
+    });
+  });
+
+//DOWNLOAD FILE
+app.get('/downloadFileE/:file', function (req, res) {
+  const file = `${__dirname}/uploadFilesEncrypt/${req.params.file}`;
+  res.download(file); // Set disposition and send it.
+});
+
+app.get('/downloadEncryptedFile/:file', function (req, res) {
+  const file = `${__dirname}/encryptedFiles/${req.params.file}`;
+  res.download(file); // Set disposition and send it.
+});
 
 /*************************************
  *  SQL LITE
@@ -268,13 +398,13 @@ app.route('/api/user/')
     var params;
     var sql;
 
-    if(!req.body.password && !req.body.name){
+    if (!req.body.password && !req.body.name) {
       res.status(400).json({
         "error": "Empty fields"
       });
       return;
     }
-    
+
     if (!req.body.password) {
       sql = "update user set  name = ? where email = ?"
       params = [req.body.name, req.body.email]
