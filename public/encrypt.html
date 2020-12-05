@@ -54,11 +54,11 @@
           <table id="files" class="files-table">
             <th>Uploaded files</th>
           </table>
-          <form action="/encryptedFiles" method="post" id="encryptForm">
+          <div id="decrypt">
             <label for="fname">Encryption Password</label>
-            <input type="text" id="fpassword" name="fpassword">
-            <button class="btn" type="submit">Encrypt Files</button>
-          </form>
+            <input type="text" id="fpassword" name="fdpassword">
+            <button class="btn" type="button" onclick="encrypt()">Encrypt Files</button>
+          </div>
         </div>
         <div class="col1">
           <table id="singedfiles" class="files-table">
@@ -67,7 +67,7 @@
           <div id="decrypt">
             <label for="fname">Decryption Password</label>
             <input type="text" id="fdpassword" name="fdpassword">
-            <button class="btn" type="button" onclick="decrypt()">Decrypt</button>
+            <button class="btn" type="button" onclick="decrypt()">Decrypt Files</button>
           </div>
         </div>
       </div>

@@ -23,6 +23,25 @@ function displaySignedFiles(files) {
         $("#singedfiles").append(`<div>${file}<a href="/downloadEncryptedFile/${file}"> Download</a></div>`);
     }
 }
+let encryptPassword = document.querySelector('#fpassword');
+
+function encrypt() {
+    let xhr = new XMLHttpRequest();
+    let endpoint = `https://localhost:3000/encryptedFiles/`
+    xhr.open('POST', endpoint);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({
+        "password": encryptPassword.value
+    }));
+
+    xhr.onload = () => {
+        if (xhr.status == 200) {
+            alert("Finish");
+        } else if (xhr.status == 404) {
+            alert("Error on process");
+        }
+    }
+}
 
 let decrpytPassword = document.querySelector('#fdpassword');
 

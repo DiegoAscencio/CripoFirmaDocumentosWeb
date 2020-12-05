@@ -250,6 +250,7 @@ app.route('/encryptedFiles')
     })
   })
   .post((req, res) => {
+    let password = req.body.password;
     let files = [];
     fs.readdirSync(`${__dirname}/uploadFiles/`).forEach(file => {
       files.push(file);
@@ -261,7 +262,7 @@ app.route('/encryptedFiles')
           if (err) throw err;
         });
         let filegerData = new fileger.File(`${__dirname}/encryptedFiles/${file}`);
-        filegerData.encrypt("password");
+        filegerData.encrypt(password);
       }
     }
     wrapperFunc().then(result => {
