@@ -292,7 +292,9 @@ app.route('/decryptFiles')
         'message': "Decrpytion is correct for all the files"
       });
     }).catch(err => {
-      // got error
+      res.status(400).json({
+        'message': "Decrpytion incorrect on some files"
+      });
     });
   });
 

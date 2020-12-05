@@ -24,20 +24,22 @@ function displaySignedFiles(files) {
     }
 }
 
+let decrpytPassword = document.querySelector('#fdpassword');
+
 function decrypt() {
     let xhr = new XMLHttpRequest();
     let endpoint = `https://localhost:3000/decryptFiles/`
     xhr.open('POST', endpoint);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({
-        "password": 'password'
+        "password": decrpytPassword.value
     }));
 
     xhr.onload = () => {
         if (xhr.status == 200) {
-            alert("Good");
+            alert("Finish");
         } else if (xhr.status == 404) {
-            alert("Error");
+            alert("Error on process");
         }
     }
 }

@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css">
   <script src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
   <link rel="stylesheet" type="text/css" href="css/login.css">
-  <link rel="stylesheet" type="text/css" href="css/index.css">
+  <link rel="stylesheet" type="text/css" href="css/encrypt.css">
 </head>
 
 <body onload="onLoad()">
@@ -54,16 +54,21 @@
           <table id="files" class="files-table">
             <th>Uploaded files</th>
           </table>
-          <form action="/encryptedFiles" method="post">
+          <form action="/encryptedFiles" method="post" id="encryptForm">
+            <label for="fname">Encryption Password</label>
+            <input type="text" id="fpassword" name="fpassword">
             <button class="btn" type="submit">Encrypt Files</button>
-            <input type="text" id="fpassword" name="fpassword"><br><br>
           </form>
         </div>
         <div class="col1">
           <table id="singedfiles" class="files-table">
             <th>Encrypted Files</th>
           </table>
-          <button class="btn" type="button" onclick="decrypt()">Decrypt</button>
+          <div id="decrypt">
+            <label for="fname">Decryption Password</label>
+            <input type="text" id="fdpassword" name="fdpassword">
+            <button class="btn" type="button" onclick="decrypt()">Decrypt</button>
+          </div>
         </div>
       </div>
 
