@@ -256,26 +256,21 @@ app.route('/encryptedFiles')
       files.push(file);
     });
 
-    async function wrapperFunc() {
-      for (file of files) {
-        fs.copyFile(`${__dirname}/uploadFiles/${file}`, `${__dirname}/encryptedFiles/${file}`, (err) => {
-          if (err) throw err;
-        });
-        console.log("Wait result");
-        for(i=0;i<100000;i++);
-        console.log("End wait");
-        let filegerData = new fileger.File(`${__dirname}/encryptedFiles/${file}`);
-        console.log("Wait result");
-        for(i=0;i<100000;i++);
-        console.log("End wait");
-        filegerData.encrypt(password);
-      }
+    for (file of files) {
+      fs.copyFile(`${__dirname}/uploadFiles/${file}`, `${__dirname}/encryptedFiles/${file}`, (err) => {
+        if (err) throw err;
+      });
+      console.log("Wait result");
+      for (i = 0; i < 100000; i++);
+      console.log("End wait");
+      let filegerData = new fileger.File(`${__dirname}/encryptedFiles/${file}`);
+      console.log("Wait result");
+      for (i = 0; i < 100000; i++);
+      console.log("End wait");
+      filegerData.encrypt(password);
     }
-    wrapperFunc().then(result => {
-      res.redirect('/encrypt.html');
-    }).catch(err => {
-      // got error
-    });
+
+    res.redirect('/encrypt.html');
 
   });
 
@@ -287,7 +282,7 @@ app.route('/decryptFiles')
     fs.readdirSync(`${__dirname}/uploadFiles/`).forEach(file => {
       files.push(file);
     });
-    
+
     async function wrapperFunc() {
       for (file of files) {
         let filegerData = new fileger.File(`${__dirname}/encryptedFiles/${file}`);
@@ -296,7 +291,7 @@ app.route('/decryptFiles')
     }
     let i = 0;
     console.log("Wait result");
-    for(i=0;i<100000;i++);
+    for (i = 0; i < 100000; i++);
     console.log("End wait");
 
     wrapperFunc().then(result => {

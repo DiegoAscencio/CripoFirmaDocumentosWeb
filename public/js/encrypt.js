@@ -37,6 +37,7 @@ function encrypt() {
     xhr.onload = () => {
         if (xhr.status == 200) {
             alert("Finish");
+            location.reload();
         } else if (xhr.status == 404) {
             alert("Error on process");
         }
